@@ -1,0 +1,81 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    overflow: hidden;
+  }
+  
+  a {
+    text-decoration: none;
+  }
+  
+  button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  button:focus {
+    outline: none;
+  }
+  
+  .asideMenu {
+    width: 300px;
+    background-color: #474747;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    border-left: 5px solid #ff9a15;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(23, 23, 54, 0.6);
+    
+    transform: translateX(295px);
+    transition: all 0.3s;
+  }
+  .asideMenu.active {
+    transform: translateX(0);
+  }
+  .asideMenu .open {
+    position: absolute;
+    top: 0%;
+    left: -25%;
+    width: 80px;
+    height: 50px;
+    background: url('https://api.iconify.design/bx/chevron-left-square.svg?color=%23ff9a15&width=80&height=50');
+  }
+  .asideMenu .close {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 80px;
+    height: 50px;
+    background: url('https://api.iconify.design/bx/chevron-right-square.svg?color=%23ff9a15&width=80&height=50');
+    display: none;
+  }
+  
+  .asideMenu .title {
+    font-size: 24px;
+    color: #ff9a15;
+  }
+  .asideMenu .list {
+    display: flex;
+  }
+  .asideMenu .list .optionTitle {
+    color: #ff9a15;
+  }
+  .asideMenu .list .optionList {
+    color: #fff;
+  }
+  .asideMenu .list .optionTitle,
+  .asideMenu .list .optionList {
+    display: block;
+    padding: 20px;
+    line-height: 2;
+  }
+  .asideMenu .list .optionTitle .fas,
+  .asideMenu .list .optionList .fas {
+    color: #fff;
+    outline: none;
+    border: none;
+  }
