@@ -1,6 +1,6 @@
 # QuestSystem
 --
-這是用來公告任務的布告欄
+這是用來公告任務的網頁系統
 
 測試用網站:pollnextdoor.com  
 我不在時網站:tw.pollnextdoor.com  
