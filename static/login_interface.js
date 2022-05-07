@@ -24,10 +24,12 @@ function toFirstPage() {
                 </tr>
                 <tr align="center">
                     <td>活動說明 </td>
-                    <td>在任務系統中，有許多任務等著你完成<br>
+                    <td>在任務系統中，有許多任務等著你完成
+                        <img src="https://i.imgur.com/GVWmReB.png" width="80" height="80"><br>
                         我們有主線任務，讓攻略玩家升級自己，最後完成終極任務<br>
                         我們也有支線任務，讓休閒玩家享受自在，不必被升級轉職綑綁<br>
                         每個任務都有豐厚獎勵，也建議大家盡力完成終極任務！畢竟是我們耗費心力完成的一串任務線。<br>
+                        <img src="https://i.imgur.com/BpzuVHC.jpg" width="250" height="160"><br>
                         <br>
                         在右側的選單中，能夠登入大家的帳號密碼。<br>
                         進入登入畫面後，右側選單將會顯示大家的名稱...等等資料。<br>
@@ -35,7 +37,8 @@ function toFirstPage() {
                         未達到限制前，任務將不會出現在各位的任務系統中。<br>
                         第一名完成任務者，將會在任務系統中廣播。<br>
                         也會有"神秘任務"，會在廣播後出現，還請各位留意~<br>
-                        (小提示：完成試煉任務以後，將會讓主線任務為各位完全開啟！)<br>.
+                        (小提示：完成試煉任務以後，將會讓主線任務為各位完全開啟！)<br>
+                        <img src="https://i.imgur.com/I3dcSPq.jpg" width="250" height="160"><br>_
                     </td>
                 </tr>
                 <tr align="center">
@@ -145,7 +148,7 @@ function loadQUESTS(QUESTS) {
             <td>${q.QNAME}</td>
             <td arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)">${q.EXPLAIN}...(點擊獲得更多資訊)</td>
             <td>${q.PRICE}</td>
-            <td><button id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</button></td>
+            <td style="background-color:green;"><button id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</button></td>
             <td ${btntxt} style="background-color:${color};">${text}</td>
         </tr>`;
     }
@@ -328,7 +331,7 @@ function filterQuest(TYPE) {
             <td>${q.QNAME}</td>
             <td arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)">${q.EXPLAIN}...(點擊獲得更多資訊)</td>
             <td>${q.PRICE}</td>
-            <td><button id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</button></td>
+            <td style="background-color:green;"><button id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</button></td>
             <td ${btntxt} style="background-color:${color};">${text}</td>
         </tr>`;
     }
