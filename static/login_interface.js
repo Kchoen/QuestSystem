@@ -2,7 +2,7 @@ function toFirstPage() {
     $(document.body).empty();
     $(document.body).append(
         $(`
-        <div id="QUESTS" style="float:left; width:100vw; height: 100vh">
+        <div id="QUESTS" style="float:left; width:100vw; height: 100vh; margin-right:1%">
         <table style="width:99vw;">
             <thead>
                 <tr>
@@ -102,7 +102,7 @@ function toFirstPage() {
 
 function loadQUESTS(QUESTS) {
     BEGIN = `
-    <table style="width:100vw;">
+    <table style="width:99vw;">
         <thead>
             <tr>
                 <th colspan="6">公開任務清單</th>
