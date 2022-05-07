@@ -30,7 +30,7 @@
     padding: 20px;
     box-shadow: 0 0 5px rgba(23, 23, 54, 0.6);
     
-    transform: translateX(295px);
+    transform: translateX(300px);
     transition: all 0.3s;
   }
   .asideMenu.active {

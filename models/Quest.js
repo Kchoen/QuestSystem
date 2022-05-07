@@ -50,8 +50,8 @@ const quest = sequelize.define(
             allowNull: true,
             defaultValue: null,
             get() {
-                if (this.getDataValue("PEOPLE") == undefined) {
-                    return undefined;
+                if (this.getDataValue("PEOPLE") == null) {
+                    return [];
                 } else {
                     return this.getDataValue("PEOPLE").split(";");
                 }

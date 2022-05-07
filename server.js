@@ -42,17 +42,17 @@ function init(state) {
         }
     });
 }
-function setupQuests() {
+async function setupQuests() {
     for (var i = 1; i < QUESTS.length; i++) {
         if (QUESTS[i].length == 0) break;
-        quest.create({
+        await quest.create({
             MTYPE: QUESTS[i][0],
             QNAME: QUESTS[i][1],
             EXPLAIN: QUESTS[i][2],
             LONGEXPLAIN: QUESTS[i][3],
             PRICE: QUESTS[i][4],
             REPLY: QUESTS[i][5],
-            FOR: createFor(QUESTS[i][6]),
+            FOR: createFor(QUESTS[i][6], []),
             TYPE: QUESTS[i][6],
         });
     }
@@ -68,21 +68,7 @@ function setupUsers() {
         });
     }
 }
-function addQuests() {
-    for (var i = 1; i < addQUESTS.length; i++) {
-        if (addQUESTS[i].length == 0) break;
-        quest.create({
-            MTYPE: addQUESTS[i][0],
-            QNAME: addQUESTS[i][1],
-            EXPLAIN: addQUESTS[i][2],
-            LONGEXPLAIN: addQUESTS[i][3],
-            PRICE: addQUESTS[i][4],
-            REPLY: addQUESTS[i][5],
-            FOR: createFor(QUESTS[i][6]),
-            TYPE: QUESTS[i][6],
-        });
-    }
-}
+
 function loadUsers(state) {
     if (state) {
         for (var i = 1; i < USERS.length; i++) {
@@ -93,7 +79,7 @@ function loadUsers(state) {
     } else {
         user.findAll({}).then((us) => {
             for (u of us) {
-                curUsers.push({ CNAME: u.CNAME, JOB: u.JOB, LVL: u.LVL });
+                curUsers.push({ CNAME: u.CNAME, JOB: u.JOB, LVL: parseInt(u.LVL) });
             }
             console.log(curUsers);
         });
@@ -101,20 +87,20 @@ function loadUsers(state) {
 
     //console.log(curUsers);
 }
-function createFor(TYPE) {
+function createFor(TYPE, PEOPLE) {
     let NameList = [];
     T = TYPE.split(";")[0];
     LVL = TYPE.split(";")[1];
     switch (T) {
         case "一般":
             NameList = curUsers.map((elem) => {
-                if (!(parseInt(LVL) > parseInt(elem.LVL))) {
+                if (!(parseInt(LVL) > parseInt(elem.LVL)) || elem.JOB == "GM") {
                     return elem.CNAME;
                 }
             });
             break;
         default:
-            const filterList = curUsers.filter((u) => (u.JOB == T && !(parseInt(LVL) > parseInt(u.LVL))) || u.JOB == "GM");
+            const filterList = curUsers.filter((u) => (u.JOB == T && !(parseInt(LVL) > parseInt(u.LVL))) || PEOPLE.includes(u.CNAME) || u.JOB == "GM");
             NameList = filterList.map((elem) => elem["CNAME"]);
             break;
     }
@@ -128,10 +114,18 @@ function updateFor(CNAME, JOB, LVL) {
             break;
         }
     }
-    quest.findAll({ attributes: ["id", "TYPE"] }).then((qList) => {
+    quest.findAll({ attributes: ["id", "TYPE", "PEOPLE"] }).then((qList) => {
         for (q of qList) {
-            quest.update({ FOR: createFor(q.TYPE) }, { where: { id: q.id } });
+            quest.update({ FOR: createFor(q.TYPE, q.PEOPLE) }, { where: { id: q.id } });
         }
+    });
+}
+function updateSession(req) {
+    UNAME = req.session.UNAME;
+    user.findOne({ where: { UNAME: UNAME } }).then((u) => {
+        req.session.CNAME = u.CNAME;
+        req.session.JOB = u.JOB;
+        req.session.LVL = u.LVL;
     });
 }
 app.get("/", (req, res) => {
@@ -143,13 +137,13 @@ app.post("/", (req, res) => {
     if (TYPE == "LOGIN") {
         UNAME = req.body.UNAME;
         PASSWORD = req.body.PASSWORD;
-        user.findOne({ where: { UNAME: UNAME } })
+        user.findOne({ attributes: ["PASSWORD"], where: { UNAME: UNAME } })
             .then((u) => {
                 if (u["PASSWORD"] == PASSWORD) {
-                    req.session.UNAME = u["UNAME"];
-                    req.session.CNAME = u["CNAME"];
-                    req.session.JOB = u["JOB"];
-                    req.session.LVL = u["LVL"];
+                    req.session.UNAME = UNAME;
+                    req.session.CNAME = u.CNAME;
+                    req.session.JOB = u.JOB;
+                    req.session.LVL = u.LVL;
                     res.send(true);
                 } else {
                     res.send(false);
@@ -161,7 +155,9 @@ app.post("/", (req, res) => {
     } else if (TYPE == "QUEST") {
         QNAME = req.body.QNAME;
         CDKEY = req.body.CDKEY;
-        PLAYERNAME = req.body.PLAYERNAME;
+        PLAYERNAME = req.session.CNAME;
+        JOB = req.session.JOB;
+        LVL = req.session.LVL;
         if (checkCDKEY(PLAYERNAME, QNAME, secret, CDKEY)) {
             quest.findOne({ where: { QNAME: QNAME } }).then((msg) => {
                 reply = { text: msg.REPLY };
@@ -170,6 +166,12 @@ app.post("/", (req, res) => {
                 }
                 if (msg["FINISHED"]) {
                     if (msg["PEOPLE"].indexOf(PLAYERNAME) == -1) {
+                        if (msg.MTYPE == "職業任務") {
+                            updateFor(CNAME, req.session.JOB, LVL + 10);
+                            user.update({ LVL: LVL + 10 }, { where: { CNAME: PLAYERNAME } }).then(() => {
+                                updateSession(req);
+                            });
+                        }
                         let P = msg["PEOPLE"];
                         P.push(PLAYERNAME);
                         quest.update({ PEOPLE: P }, { where: { QNAME: QNAME } });
@@ -178,6 +180,12 @@ app.post("/", (req, res) => {
                         res.send({ msg: `您已經完成任務！` });
                     }
                 } else {
+                    if (msg.MTYPE == "職業任務") {
+                        updateFor(CNAME, req.session.JOB, LVL + 10);
+                        user.update({ LVL: LVL + 10 }, { where: { CNAME: PLAYERNAME } }).then(() => {
+                            updateSession(req);
+                        });
+                    }
                     quest.update({ FINISHED: true, FINISHEDBY: PLAYERNAME, PEOPLE: [PLAYERNAME] }, { where: { QNAME: QNAME } });
                     io.sockets.emit("CELEBRATION", `恭喜${PLAYERNAME}!!\n恭喜他第一個完成 ${QNAME} 任務！`);
                     res.send({ msg: `恭喜您！完成任務！\n 您是第一個完成任務的玩家！！\n\n提示：${reply.text}`, CDKEY: reply.CDKEY });
@@ -187,31 +195,40 @@ app.post("/", (req, res) => {
             res.send({ msg: "您還沒完成任務！請找NPC確認。" });
         }
     } else if (TYPE == "ChangeJOB") {
-        JOB = req.body.JOB;
+        JOB = req.session.JOB;
         CDKEY = req.body.CDKEY;
-        PLAYERNAME = req.body.PLAYERNAME;
+        PLAYERNAME = req.session.CNAME;
         if (CDKEY == "開啟限時隱藏任務" && PLAYERNAME == "黑風") {
             console.log("限時任務開啟");
             io.sockets.emit("BROADCAST", "現在開啟限時隱藏任務!!");
             res.send({ msg: "已開啟" });
             return;
         }
-        newJOB = checkJOB(PLAYERNAME, JOB, secret, CDKEY);
+        newJOB = checkJOB(PLAYERNAME, secret, CDKEY);
         if (newJOB) {
             user.update({ JOB: newJOB }, { where: { CNAME: PLAYERNAME } }).then(() => {
-                req.session.JOB = newJOB;
-                updateFor(PLAYERNAME, newJOB);
+                updateFor(PLAYERNAME, newJOB, req.session.LVL);
+                updateSession(req);
                 io.sockets.emit("CELEBRATION", `恭喜${PLAYERNAME}!!\n恭喜他成功轉職成${newJOB}！`);
                 res.send({ msg: `恭喜您！成功轉職成${newJOB}！` });
             });
         } else {
             res.send({ msg: "您還沒完成任務！請找NPC確認。" });
         }
+    } else if (TYPE == "LOGOUT") {
+        req.session.destroy((err) => {
+            res.send("success");
+        });
     }
 });
 app.get("/FetchINFO", (req, res) => {
     if (req.session.UNAME != undefined) {
-        res.send({ UNAME: req.session.UNAME, CNAME: req.session.CNAME, JOB: req.session.JOB, LVL: req.session.LVL });
+        user.findOne({ where: { UNAME: req.session.UNAME } }).then((u) => {
+            req.session.CNAME = u.CNAME;
+            req.session.JOB = u.JOB;
+            req.session.LVL = u.LVL;
+            res.send({ UNAME: req.session.UNAME, CNAME: req.session.CNAME, JOB: req.session.JOB, LVL: req.session.LVL });
+        });
     } else {
         res.send(false);
     }
