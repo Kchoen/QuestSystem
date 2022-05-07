@@ -202,7 +202,10 @@ function submitQuest(item) {
 }
 
 function showMore(obj) {
-    swal($(obj).attr("arg1"), $(obj).attr("arg2"), "info");
+    arg2 = $(obj).attr("arg2").split("。");
+    arg2 = arg2.join("。\n");
+    console.log(arg2);
+    swal($(obj).attr("arg1"), arg2, "info");
 }
 
 function SendCDKEY() {
