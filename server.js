@@ -14,7 +14,6 @@ const app = express();
 var curUsers = [];
 var QUESTS = xlsx.parse(__dirname + "/任務表.xlsx")[0].data;
 var USERS = xlsx.parse(__dirname + "/帳密表.xlsx")[0].data;
-var addQUESTS = xlsx.parse(__dirname + "/新增任務表.xlsx")[0].data;
 secret = "雲夢超讚by羊羊";
 var credentials = {
     key: fs.readFileSync("server.key", "utf8"),
