@@ -103,21 +103,28 @@ function loadUsers(state) {
 }
 function createFor(TYPE) {
     let NameList = [];
-    switch (TYPE) {
+    T = TYPE.split(";")[0];
+    LVL = TYPE.split(";")[1];
+    switch (T) {
         case "一般":
-            NameList = curUsers.map((elem) => elem["CNAME"]);
+            NameList = curUsers.map((elem) => {
+                if (!(parseInt(LVL) > parseInt(elem.LVL))) {
+                    return elem.CNAME;
+                }
+            });
             break;
         default:
-            const filterList = curUsers.filter((u) => u.JOB == TYPE || u.JOB == "GM");
+            const filterList = curUsers.filter((u) => (u.JOB == T && !(parseInt(LVL) > parseInt(u.LVL))) || u.JOB == "GM");
             NameList = filterList.map((elem) => elem["CNAME"]);
             break;
     }
     return NameList;
 }
-function updateFor(CNAME, JOB) {
+function updateFor(CNAME, JOB, LVL) {
     for (var i = 1; i < curUsers.length; i++) {
         if (curUsers[i].CNAME == CNAME) {
             curUsers[i].JOB = JOB;
+            curUsers[i].LVL = LVL;
             break;
         }
     }
