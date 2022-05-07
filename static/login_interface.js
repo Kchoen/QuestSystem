@@ -6,29 +6,21 @@ function toFirstPage() {
         <table style="width:99vw;">
             <thead>
                 <tr>
-                    <th colspan="3"></th>
+                    <th colspan="2"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr align="center">
-                    <td>###</td>
-                    <td>歡迎各位雲夢小夥伴~~~</td>
-                    <td>###</td>
+                    <td colspan="2">歡迎各位雲夢小夥伴~~~<br>
+                    這裡是我們本次活動使用的任務網站~~~<br>
+                   </td>
+                    
                 </tr>
-                <tr align="center">
-                    <td>###</td>
-                    <td>這裡是我們本次活動使用的任務網站~~~</td>
-                    <td>###</td>
-                </tr>
-                <tr align="center">
-                    <td>###</td>
-                    <td>${"--".repeat(50)}</td>
-                    <td>###</td>
-                </tr>
+                
+               
                 <tr align="center">
                     <td>活動名稱 </td>
                     <td>冒險島任務日誌</td>
-                    <td></td>
                 </tr>
                 <tr align="center">
                     <td>活動說明 </td>
@@ -45,7 +37,6 @@ function toFirstPage() {
                         也會有"神秘任務"，會在廣播後出現，還請各位留意~<br>
                         (小提示：完成試煉任務以後，將會讓主線任務為各位完全開啟！)<br>.
                     </td>
-                    <td></td>
                 </tr>
                 <tr align="center">
                     <td>製作人的話 </td>
@@ -63,11 +54,8 @@ function toFirstPage() {
                         也期待各位在活動之後能夠分享心得，讓我們能夠為下次活動做改善！<br><br>
                         怎麼樣 我這圖片 有像puppy嗎 :)
                     </td>
-                    <td></td>
                 </tr>
-                <tr align="center">
-                    <td></td>
-                </tr>
+                
             </tbody>
         </table>
         </div>
