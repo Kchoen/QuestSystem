@@ -240,7 +240,6 @@ app.post("/", (req, res) => {
                 res.send({ msg: "已關閉" });
             } else if (CDKEY.slice(0, 4) == "新增用戶") {
                 param = CDKEY.slice(5).split(";");
-                console.log(param);
                 UNAME = param[0];
                 PW = param[1];
                 CNAME = param[2];
@@ -255,7 +254,7 @@ app.post("/", (req, res) => {
                     res.send({ msg: "新增成功" });
                 });
             } else {
-                res.send({ msg: "目前功能:['開啟任務','開啟任務','新增用戶:帳號;密碼;用戶名']" });
+                res.send({ msg: "目前功能:['開啟任務','關閉任務','新增用戶:帳號;密碼;用戶名']" });
             }
             return;
         }
