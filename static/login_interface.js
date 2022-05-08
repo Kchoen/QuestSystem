@@ -117,7 +117,8 @@ function loadQUESTS(QUESTS) {
             <button style="color:green" onclick="filterQuest('支線任務')">支線任務</button>/
             <button style="color:green" onclick="filterQuest('轉職任務')">轉職任務</button>/
             <button style="color:green" onclick="filterQuest('職業任務')">職業任務</button>/
-            <button style="color:green" onclick="filterQuest('試煉任務')">試煉任務</button>
+            <button style="color:green" onclick="filterQuest('試煉任務')">試煉任務</button>/
+            <button style="color:green" onclick="filterQuest('隱藏任務')">隱藏任務</button>
             </td>
             
             <td colspan="3"></td>
@@ -158,6 +159,13 @@ function loadQUESTS(QUESTS) {
 }
 
 function sessionLOGIN() {
+    if (UserINFO.JOB == "GM") {
+        text = "text";
+        value = { 1: "指令輸入區", 2: "輸入指令" };
+    } else {
+        text = "password";
+        value = { 1: "完成專屬任務：", 2: "輸入任務密鑰" };
+    }
     $("#SLIDEINFO").empty();
     $("#SLIDEINFO").append(`
     <div class="title">功能表單</div>
@@ -186,10 +194,10 @@ function sessionLOGIN() {
         </table>
         
         <br>
-        完成專屬任務：
-        <input type="password" style="width:200px;font-size:18px;" id="CDKEY" />
+        ${value["1"]}
+        <input type="${text}" style="width:200px;font-size:18px;" id="CDKEY" />
         <br><br>
-        <input value="輸入任務密鑰" type="submit" onclick="SendCDKEY()"/>
+        <input value="${value["2"]}" type="submit" onclick="SendCDKEY()"/>
         <br><br>
         <input value="登出" type="submit" style="width:100px;font-size:15px;" onclick="logout()"/>
     </div>
@@ -299,7 +307,8 @@ function filterQuest(TYPE) {
             <button style="color:green" onclick="filterQuest('支線任務')">支線任務</button>/
             <button style="color:green" onclick="filterQuest('轉職任務')">轉職任務</button>/
             <button style="color:green" onclick="filterQuest('職業任務')">職業任務</button>/
-            <button style="color:green" onclick="filterQuest('試煉任務')">試煉任務</button>
+            <button style="color:green" onclick="filterQuest('試煉任務')">試煉任務</button>/
+            <button style="color:green" onclick="filterQuest('隱藏任務')">隱藏任務</button>
             </td>
             
             <td colspan="3"></td>
