@@ -210,7 +210,7 @@ app.post("/", (req, res) => {
             res.send({ msg: "已開啟" });
             return;
         }
-        if (CDKEY == "關閉任務" && PLAYERNAME == "黑風") {
+        if (CDKEY == "關閉任務" && PLAYERNAME == "GM") {
             console.log("限時任務關閉");
             hideQuest();
             io.sockets.emit("BROADCAST", "限時隱藏任務已結束!!");
