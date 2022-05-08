@@ -14,6 +14,7 @@ const app = express();
 var curUsers = [];
 var QUESTS = xlsx.parse(__dirname + "/任務表.xlsx")[0].data;
 var USERS = xlsx.parse(__dirname + "/帳密表.xlsx")[0].data;
+var addUSERS = xlsx.parse(__dirname + "/新增帳密表.xlsx")[0].data;
 secret = "雲夢超讚by羊羊";
 var credentials = {
     key: fs.readFileSync("server.key", "utf8"),
@@ -33,7 +34,7 @@ app.use(session(sess));
 app.use(express.static("static"));
 app.use(bodyParser.json({ limit: "50mb", type: "application/json" }));
 
-function init(state) {
+async function init(state) {
     sequelize.sync({ force: state }).then(() => {
         loadUsers(state);
         if (state) {
@@ -68,6 +69,18 @@ function setupUsers() {
         });
     }
 }
+async function addUsers() {
+    for (var i = 1; i < addUSERS.length; i++) {
+        if (addUSERS[i].length == 0) break;
+        await user.create({
+            UNAME: addUSERS[i][0],
+            PASSWORD: addUSERS[i][1],
+            CNAME: addUSERS[i][2],
+            JOB: addUSERS[i][3],
+        });
+    }
+    loadUsers(false);
+}
 
 function loadUsers(state) {
     if (state) {
@@ -77,6 +90,7 @@ function loadUsers(state) {
         }
         console.log(curUsers);
     } else {
+        curUsers = [];
         user.findAll({}).then((us) => {
             for (u of us) {
                 curUsers.push({ CNAME: u.CNAME, JOB: u.JOB, LVL: parseInt(u.LVL) });
@@ -132,10 +146,10 @@ app.get("/", (req, res) => {
     res.sendFile("index.html", { root: __dirname + "/templates" });
 });
 function showQuest() {
-    quest.update({ FOR: createFor("一般"), TYPE: "一般" }, { where: { MTYPE: "隱藏任務" } });
+    quest.update({ FOR: createFor("一般", []), TYPE: "一般" }, { where: { MTYPE: "隱藏任務" } });
 }
 function hideQuest() {
-    quest.update({ FOR: createFor("隱藏"), TYPE: "隱藏" }, { where: { MTYPE: "隱藏任務" } });
+    quest.update({ FOR: createFor("隱藏", []), TYPE: "隱藏" }, { where: { MTYPE: "隱藏任務" } });
 }
 app.post("/", (req, res) => {
     TYPE = req.body.TYPE;
@@ -176,6 +190,11 @@ app.post("/", (req, res) => {
                             user.update({ LVL: LVL + 10 }, { where: { CNAME: PLAYERNAME } }).then(() => {
                                 updateSession(req);
                             });
+                        } else if (msg.MTYPE == "試煉任務") {
+                            updateFor(CNAME, req.session.JOB, LVL + 30);
+                            user.update({ LVL: LVL + 30 }, { where: { CNAME: PLAYERNAME } }).then(() => {
+                                updateSession(req);
+                            });
                         }
                         let P = msg["PEOPLE"];
                         P.push(PLAYERNAME);
@@ -188,6 +207,11 @@ app.post("/", (req, res) => {
                     if (msg.MTYPE == "職業任務") {
                         updateFor(CNAME, req.session.JOB, LVL + 10);
                         user.update({ LVL: LVL + 10 }, { where: { CNAME: PLAYERNAME } }).then(() => {
+                            updateSession(req);
+                        });
+                    } else if (msg.MTYPE == "試煉任務") {
+                        updateFor(CNAME, req.session.JOB, LVL + 30);
+                        user.update({ LVL: LVL + 30 }, { where: { CNAME: PLAYERNAME } }).then(() => {
                             updateSession(req);
                         });
                     }
@@ -203,20 +227,39 @@ app.post("/", (req, res) => {
         JOB = req.session.JOB;
         CDKEY = req.body.CDKEY;
         PLAYERNAME = req.session.CNAME;
-        if (CDKEY == "開啟任務" && JOB == "GM") {
-            console.log("限時任務開啟");
-            showQuest();
-            io.sockets.emit("BROADCAST", "現在開啟限時隱藏任務!!");
-            res.send({ msg: "已開啟" });
+        if (JOB == "GM") {
+            if (CDKEY == "開啟任務") {
+                console.log("限時任務開啟");
+                showQuest();
+                io.sockets.emit("BROADCAST", "現在開啟限時隱藏任務!!");
+                res.send({ msg: "已開啟" });
+            } else if (CDKEY == "關閉任務") {
+                console.log("限時任務關閉");
+                hideQuest();
+                io.sockets.emit("BROADCAST", "限時隱藏任務已結束!!");
+                res.send({ msg: "已關閉" });
+            } else if (CDKEY.slice(0, 4) == "新增用戶") {
+                param = CDKEY.slice(5).split(";");
+                console.log(param);
+                UNAME = param[0];
+                PW = param[1];
+                CNAME = param[2];
+                user.create({
+                    UNAME: UNAME,
+                    PASSWORD: PW,
+                    CNAME: CNAME,
+                    JOB: "初心者",
+                }).then(() => {
+                    curUsers.push({ CNAME: CNAME, JOB: "初心者", LVL: 10 });
+                    updateFor(CNAME, "初心者", 10);
+                    res.send({ msg: "新增成功" });
+                });
+            } else {
+                res.send({ msg: "目前功能:['開啟任務','開啟任務','新增用戶:帳號;密碼;用戶名']" });
+            }
             return;
         }
-        if (CDKEY == "關閉任務" && JOB == "GM") {
-            console.log("限時任務關閉");
-            hideQuest();
-            io.sockets.emit("BROADCAST", "限時隱藏任務已結束!!");
-            res.send({ msg: "已開啟" });
-            return;
-        }
+
         newJOB = checkJOB(PLAYERNAME, secret, CDKEY);
         if (newJOB) {
             user.update({ JOB: newJOB }, { where: { CNAME: PLAYERNAME } }).then(() => {
