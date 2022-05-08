@@ -131,7 +131,12 @@ function updateSession(req) {
 app.get("/", (req, res) => {
     res.sendFile("index.html", { root: __dirname + "/templates" });
 });
-
+function showQuest() {
+    quest.update({ FOR: createFor("一般"), TYPE: "一般" }, { where: { MTYPE: "隱藏任務" } });
+}
+function hideQuest() {
+    quest.update({ FOR: createFor("隱藏"), TYPE: "隱藏" }, { where: { MTYPE: "隱藏任務" } });
+}
 app.post("/", (req, res) => {
     TYPE = req.body.TYPE;
     if (TYPE == "LOGIN") {
@@ -198,9 +203,17 @@ app.post("/", (req, res) => {
         JOB = req.session.JOB;
         CDKEY = req.body.CDKEY;
         PLAYERNAME = req.session.CNAME;
-        if (CDKEY == "開啟限時隱藏任務" && PLAYERNAME == "黑風") {
+        if (CDKEY == "開啟任務" && JOB == "GM") {
             console.log("限時任務開啟");
+            showQuest();
             io.sockets.emit("BROADCAST", "現在開啟限時隱藏任務!!");
+            res.send({ msg: "已開啟" });
+            return;
+        }
+        if (CDKEY == "關閉任務" && PLAYERNAME == "黑風") {
+            console.log("限時任務關閉");
+            hideQuest();
+            io.sockets.emit("BROADCAST", "限時隱藏任務已結束!!");
             res.send({ msg: "已開啟" });
             return;
         }
