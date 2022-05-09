@@ -64,7 +64,7 @@ function toFirstPage() {
             </tbody>
         </table>
         </div>
-        <div class="asideMenu">
+        <div id="Menu" class="asideMenu">
         <button class="open"></button>
         <button class="close"></button>
             <div  id="SLIDEINFO" >
