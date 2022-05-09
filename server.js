@@ -188,7 +188,7 @@ app.post("/", (req, res) => {
                         quest.update({ PEOPLE: P }, { where: { QNAME: QNAME } });
                         res.send({ msg: `恭喜您！完成任務！\n\n提示：${reply.text}`, CDKEY: reply.CDKEY });
                     } else {
-                        res.send({ msg: `您已經完成任務！` });
+                        res.send({ msg: `您已經完成任務！\n\n提示：${reply.text}`, CDKEY: reply.CDKEY });
                     }
                 } else {
                     if (msg.MTYPE == "職業任務") {

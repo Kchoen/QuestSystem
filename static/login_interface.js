@@ -136,7 +136,31 @@ function loadQUESTS(QUESTS) {
     END = `</tbody></table>`;
     questCODE = "";
     questCODE += BEGIN;
+    FINISHED = [];
     for (var q of QUESTS) {
+        let color = "red",
+            text = "未完成",
+            btntxt = "";
+        if (q.PEOPLE.includes(UserINFO.CNAME)) {
+            FINISHED.push(q);
+            continue;
+        }
+        if (q.FINISHED) {
+            btntxt = `arg1="已完成玩家" arg2="${q.PEOPLE.join("、")}" onclick="showMore(this)"`;
+            color = "green";
+            text = `由${q.FINISHEDBY}完成`;
+        }
+        questCODE += `
+        <tr align="center">
+            <td>${q.MTYPE}</td>
+            <td>${q.QNAME}</td>
+            <td arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)">${q.EXPLAIN}...(點擊獲得更多資訊)</td>
+            <td>${q.PRICE}</td>
+            <td style="background-color:green;"><button id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</button></td>
+            <td ${btntxt} style="background-color:${color};">${text}</td>
+        </tr>`;
+    }
+    for (var q of FINISHED) {
         let color = "red",
             text = "未完成",
             btntxt = "";
@@ -272,7 +296,6 @@ function submitQuest(item) {
 function showMore(obj) {
     arg2 = $(obj).attr("arg2").split("。");
     arg2 = arg2.join("。\n");
-    console.log(arg2);
     swal($(obj).attr("arg1"), arg2, "info");
 }
 
@@ -326,8 +349,32 @@ function filterQuest(TYPE) {
     END = "</table>";
     questCODE = "";
     questCODE += BEGIN;
+    FINISHED = [];
     for (var q of QUESTS) {
         if (q.MTYPE != TYPE && TYPE != "全任務") continue;
+        let color = "red",
+            text = "未完成",
+            btntxt = "";
+        if (q.PEOPLE.includes(UserINFO.CNAME)) {
+            FINISHED.push(q);
+            continue;
+        }
+        if (q.FINISHED) {
+            btntxt = `arg1="已完成玩家" arg2="${q.PEOPLE.join("、")}" onclick="showMore(this)"`;
+            color = "green";
+            text = `由${q.FINISHEDBY}完成`;
+        }
+        questCODE += `
+        <tr align="center">
+            <td>${q.MTYPE}</td>
+            <td>${q.QNAME}</td>
+            <td arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)">${q.EXPLAIN}...(點擊獲得更多資訊)</td>
+            <td>${q.PRICE}</td>
+            <td style="background-color:green;"><button id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</button></td>
+            <td ${btntxt} style="background-color:${color};">${text}</td>
+        </tr>`;
+    }
+    for (var q of FINISHED) {
         let color = "red",
             text = "未完成",
             btntxt = "";
