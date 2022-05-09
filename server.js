@@ -14,7 +14,6 @@ const app = express();
 var curUsers = [];
 var QUESTS = xlsx.parse(__dirname + "/任務表.xlsx")[0].data;
 var USERS = xlsx.parse(__dirname + "/帳密表.xlsx")[0].data;
-var addUSERS = xlsx.parse(__dirname + "/新增帳密表.xlsx")[0].data;
 secret = "雲夢超讚by羊羊";
 var credentials = {
     key: fs.readFileSync("server.key", "utf8"),
@@ -68,18 +67,6 @@ function setupUsers() {
             JOB: USERS[i][3],
         });
     }
-}
-async function addUsers() {
-    for (var i = 1; i < addUSERS.length; i++) {
-        if (addUSERS[i].length == 0) break;
-        await user.create({
-            UNAME: addUSERS[i][0],
-            PASSWORD: addUSERS[i][1],
-            CNAME: addUSERS[i][2],
-            JOB: addUSERS[i][3],
-        });
-    }
-    loadUsers(false);
 }
 
 function loadUsers(state) {
