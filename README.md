@@ -3,7 +3,7 @@
 這是用來公告任務的網頁系統
 
 測試用網站:pollnextdoor.com  
-我不在時網站:tw.pollnextdoor.com  
+我不在時網站:web2.pollnextdoor.com  
 任務討論清單:  
 https://docs.google.com/document/d/1eZcV1KS4cV6GnM6JESjJkgfD9x_WCovOUkBkPwSRsU4/edit?usp=sharing  
 正式任務表:  
