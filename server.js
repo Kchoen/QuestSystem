@@ -168,13 +168,11 @@ function finishQuiz() {
             quest.update({ FINISHED: true, FINISHEDBY: winners[0], PEOPLE: winners }, { where: { QNAME: "快問快答" + (curQuiz + 1) } });
             io.sockets.emit("BROADCAST", `這輪的答題王者是：${winners[0]}\n下列是所有答對的小夥伴：${winners.join("、")}`);
         } else {
-            console.log("helo");
             io.sockets.emit("BROADCAST", `這輪沒有任何人答對！！！！`);
         }
         answerPool = [];
         namePool = [];
         curQuiz++;
-        io.sockets.emit("BROADCAST", `這輪快問快答結束`);
         return;
     });
 }
@@ -273,15 +271,15 @@ app.post("/", (req, res) => {
                 hideQuest("隱藏");
                 io.sockets.emit("BROADCAST", "限時隱藏任務已結束!!");
                 res.send({ msg: "已關閉" });
-            } else if (CDKEY == "開啟答題") {
+            } else if (CDKEY == "開始答題") {
                 console.log("快問快答開始");
                 showQuest("答題");
                 io.sockets.emit("BROADCAST", "現在開始快問快答!!");
-                res.send({ msg: "已開啟" });
+                res.send({ msg: "已開啟第" + (curQuiz + 1) + "題" });
             } else if (CDKEY == "公布答案") {
                 console.log("快問快答結束");
                 finishQuiz();
-                res.send({ msg: "已關閉" });
+                res.send({ msg: "解答" });
             } else if (CDKEY.slice(0, 4) == "新增用戶") {
                 param = CDKEY.slice(5).split(";");
                 UNAME = param[0];
@@ -298,7 +296,7 @@ app.post("/", (req, res) => {
                     res.send({ msg: "新增成功" });
                 });
             } else {
-                res.send({ msg: "目前功能:\n[開啟任務，關閉任務，開啟答題，公布答案\n新增用戶:帳號;密碼;用戶名]" });
+                res.send({ msg: "目前功能:\n[開啟任務，關閉任務，開始答題，公布答案\n新增用戶:帳號;密碼;用戶名]" });
             }
             return;
         }

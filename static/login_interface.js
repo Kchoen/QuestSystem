@@ -271,7 +271,11 @@ function submitQuest(item) {
     if (UserINFO.CNAME == undefined) {
         alert("請先登入");
     } else {
-        let token = prompt("請輸入該任務的密鑰：");
+        text = "請輸入該任務的密鑰：";
+        if ($(item).attr("id").slice(0, 4) == "快問快答") {
+            text = "請輸入問題的答案：";
+        }
+        let token = prompt(text);
         if (token == null) return;
         axios
             .post("/", {
