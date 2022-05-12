@@ -194,7 +194,7 @@ function sessionLOGIN() {
     <div class="title">功能表單</div>
     <div class="list" style="margin-top:20px">
     <div align="left">
-        <table style="width:15vw;">
+        <table style="float:left;width:15vw;">
             
             <tbody>
                 <tr>
