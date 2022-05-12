@@ -67,14 +67,14 @@ function toFirstPage() {
             <div class="title">功能表單</div>
             <div class="list">
             <div align="left" style="margin-top:10vh">
-                <h2>登入畫面</h2>
+                <h2 style="font-size:30px;font-weight:800">登入畫面</h2>
                 <br>
                 <p style="font-size:20px;">帳號</p>
                 <input style="width:200px;font-size:16px;" id="UNAME" type="text"/>
                 <p style="font-size:20px;">密碼</p>
                 <input type="password" style="width:200px;font-size:16px;" id="PASSWORD" type="text"/>
                 <br><br>
-                <input value="確認" type="submit" onclick="LOGIN()"/>
+                <input class="button-62" value="確認" type="submit" onclick="LOGIN()"/>
                 <p id="wrongpw" style="color: red; display: none">Wrong password</p>
             </div>
             </div>
@@ -108,18 +108,19 @@ function loadQUESTS(QUESTS) {
         </thead>
         <tbody id="qTable">
         <tr align="left">
-            <td colspan="3" style="color:green">
-            <button style="color:green" onclick="filterQuest('全任務')">全任務</button>/
-            <button style="color:green" onclick="filterQuest('終極任務')">終極任務</button>/
-            <button style="color:green" onclick="filterQuest('主線任務')">主線任務</button>/
-            <button style="color:green" onclick="filterQuest('支線任務')">支線任務</button>/
-            <button style="color:green" onclick="filterQuest('轉職任務')">轉職任務</button>/
-            <button style="color:green" onclick="filterQuest('職業任務')">職業任務</button>/
-            <button style="color:green" onclick="filterQuest('試煉任務')">試煉任務</button>/
-            <button style="color:green;" onclick="filterQuest('隱藏任務')">隱藏任務</button>
+            <td colspan="6">
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('全任務')">全任務</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('終極任務')">終極</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('主線任務')">主線</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('支線任務')">支線</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('轉職任務')">轉職</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('職業任務')">職業</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('試煉任務')">試煉</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('答題任務')">答題</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('隱藏任務')">隱藏</button>
             </td>
             
-            <td colspan="3"></td>
+            
         </tr>
         <tr align="center">
             <td style="color:yellow">任務類型</td>
@@ -134,8 +135,7 @@ function loadQUESTS(QUESTS) {
     questCODE += BEGIN;
     FINISHED = [];
     for (var q of QUESTS) {
-        let bcolor = "red",
-            color = "black",
+        let color = "red",
             text = "未完成",
             btntxt = "";
         if (q.PEOPLE.includes(UserINFO.CNAME)) {
@@ -144,8 +144,7 @@ function loadQUESTS(QUESTS) {
         }
         if (q.FINISHED) {
             btntxt = `arg1="已完成玩家" arg2="${q.PEOPLE.join("、")}" onclick="showMore(this)"`;
-            bcolor = "green";
-            color = "white";
+            color = "green";
             text = `由${q.FINISHEDBY}完成`;
         }
         questCODE += `
@@ -155,7 +154,7 @@ function loadQUESTS(QUESTS) {
             <td><button arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.EXPLAIN}...(點擊獲得更多資訊)</button></td>
             <td>${q.PRICE}</td>
             <td class="postBTN" id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</td>
-            <td ${btntxt} style="cursor: pointer;background-color:${bcolor};color:${color};">${text}</td>
+            <td ${btntxt} style="cursor: pointer;background-color:${color};">${text}</td>
         </tr>`;
     }
     for (var q of FINISHED) {
@@ -193,15 +192,14 @@ function sessionLOGIN() {
     $("#SLIDEINFO").empty();
     $("#SLIDEINFO").append(`
     <div class="title">功能表單</div>
-    <div class="list">
+    <div class="list" style="margin-top:20px">
     <div align="left">
         <table style="width:15vw;">
-            <thead>
+            
+            <tbody>
                 <tr>
                     <th colspan="2">角色資訊</th>
                 </tr>
-            </thead>
-            <tbody>
                 <tr align="center">
                     <td style="width:5vw;">名稱</td>
                     <td style="width:10vw;">${UserINFO.CNAME}</td>
@@ -217,13 +215,12 @@ function sessionLOGIN() {
             </tbody>
         </table>
         
-        <br>
-        ${value["1"]}
+        <h3 style="float:left;font-weight:800;font-size:20px"><br>${value["1"]}</h3>
         <input type="${text}" style="width:200px;font-size:18px;" id="CDKEY" />
         <br><br>
-        <input value="${value["2"]}" type="submit" onclick="SendCDKEY()"/>
+        <input class="button-62" value="${value["2"]}" type="submit" onclick="SendCDKEY()"/>
         <br><br>
-        <input value="登出" type="submit" style="width:100px;font-size:15px;" onclick="logout()"/>
+        <input class="button-62" value="登出" type="submit" style="margin-top:40px;width:70px;font-size:13px;" onclick="logout()"/>
     </div>
     </div>
     `);
@@ -323,18 +320,19 @@ function filterQuest(TYPE) {
     QUESTS = QuestINFO;
     BEGIN = `
         <tr align="left">
-            <td colspan="3" style="color:green">
-            <button style="color:green" onclick="filterQuest('全任務')">全任務</button>/
-            <button style="color:green" onclick="filterQuest('終極任務')">終極任務</button>/
-            <button style="color:green" onclick="filterQuest('主線任務')">主線任務</button>/
-            <button style="color:green" onclick="filterQuest('支線任務')">支線任務</button>/
-            <button style="color:green" onclick="filterQuest('轉職任務')">轉職任務</button>/
-            <button style="color:green" onclick="filterQuest('職業任務')">職業任務</button>/
-            <button style="color:green" onclick="filterQuest('試煉任務')">試煉任務</button>/
-            <button style="color:green" onclick="filterQuest('隱藏任務')">隱藏任務</button>
+        <td colspan="6">
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('全任務')">全任務</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('終極任務')">終極</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('主線任務')">主線</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('支線任務')">支線</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('轉職任務')">轉職</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('職業任務')">職業</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('試煉任務')">試煉</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('答題任務')">答題</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('隱藏任務')">隱藏</button>
+            
             </td>
             
-            <td colspan="3"></td>
         </tr>
         <tr align="center">
             <td style="color:yellow">任務類型</td>
@@ -366,10 +364,10 @@ function filterQuest(TYPE) {
         <tr align="center">
             <td>${q.MTYPE}</td>
             <td>${q.QNAME}</td>
-            <td arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)">${q.EXPLAIN}...(點擊獲得更多資訊)</td>
+            <td><button arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.EXPLAIN}...(點擊獲得更多資訊)</button></td>
             <td>${q.PRICE}</td>
-            <td style="background-color:green;"><button id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</button></td>
-            <td ${btntxt} style="background-color:${color};">${text}</td>
+            <td class="postBTN" id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</td>
+            <td ${btntxt} style="cursor: pointer;background-color:${color};">${text}</td>
         </tr>`;
     }
     for (var q of FINISHED) {
@@ -385,10 +383,10 @@ function filterQuest(TYPE) {
         <tr align="center">
             <td>${q.MTYPE}</td>
             <td>${q.QNAME}</td>
-            <td arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)">${q.EXPLAIN}...(點擊獲得更多資訊)</td>
+            <td><button arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.EXPLAIN}...(點擊獲得更多資訊)</button></td>
             <td>${q.PRICE}</td>
-            <td style="background-color:green;"><button id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</button></td>
-            <td ${btntxt} style="background-color:${color};">${text}</td>
+            <td class="postBTN" id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</td>
+            <td ${btntxt} style="cursor: pointer;background-color:${color};">${text}</td>
         </tr>`;
     }
     questCODE += END;
