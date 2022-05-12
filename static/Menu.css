@@ -47,7 +47,7 @@
     left: -25%;
     width: 80px;
     height: 50px;
-    background: url('https://api.iconify.design/bx/chevron-left-square.svg?color=%23ff9a15&width=80&height=50');
+    background: url('https://api.iconify.design/bx/chevron-left-square.svg?color=%23000000&width=80&height=50');
   }
   .asideMenu .close {
     position: absolute;

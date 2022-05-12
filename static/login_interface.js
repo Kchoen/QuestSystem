@@ -6,16 +6,12 @@ function toFirstPage() {
         <table style="width:99vw;">
             <thead>
                 <tr>
-                    <th colspan="2"></th>
+                    <th colspan="2">歡迎各位雲夢小夥伴~~~<br>
+                    這裡是我們本次活動使用的任務網站~~~<br></th>
                 </tr>
             </thead>
             <tbody>
-                <tr align="center">
-                    <td colspan="2">歡迎各位雲夢小夥伴~~~<br>
-                    這裡是我們本次活動使用的任務網站~~~<br>
-                   </td>
-                    
-                </tr>
+                
                 
                
                 <tr align="center">
@@ -120,7 +116,7 @@ function loadQUESTS(QUESTS) {
             <button style="color:green" onclick="filterQuest('轉職任務')">轉職任務</button>/
             <button style="color:green" onclick="filterQuest('職業任務')">職業任務</button>/
             <button style="color:green" onclick="filterQuest('試煉任務')">試煉任務</button>/
-            <button style="color:green" onclick="filterQuest('隱藏任務')">隱藏任務</button>
+            <button style="color:green;" onclick="filterQuest('隱藏任務')">隱藏任務</button>
             </td>
             
             <td colspan="3"></td>
@@ -138,7 +134,8 @@ function loadQUESTS(QUESTS) {
     questCODE += BEGIN;
     FINISHED = [];
     for (var q of QUESTS) {
-        let color = "red",
+        let bcolor = "red",
+            color = "black",
             text = "未完成",
             btntxt = "";
         if (q.PEOPLE.includes(UserINFO.CNAME)) {
@@ -147,17 +144,18 @@ function loadQUESTS(QUESTS) {
         }
         if (q.FINISHED) {
             btntxt = `arg1="已完成玩家" arg2="${q.PEOPLE.join("、")}" onclick="showMore(this)"`;
-            color = "green";
+            bcolor = "green";
+            color = "white";
             text = `由${q.FINISHEDBY}完成`;
         }
         questCODE += `
         <tr align="center">
             <td>${q.MTYPE}</td>
             <td>${q.QNAME}</td>
-            <td arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)">${q.EXPLAIN}...(點擊獲得更多資訊)</td>
+            <td><button arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.EXPLAIN}...(點擊獲得更多資訊)</button></td>
             <td>${q.PRICE}</td>
-            <td style="background-color:green;"><button id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</button></td>
-            <td ${btntxt} style="background-color:${color};">${text}</td>
+            <td class="postBTN" id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</td>
+            <td ${btntxt} style="cursor: pointer;background-color:${bcolor};color:${color};">${text}</td>
         </tr>`;
     }
     for (var q of FINISHED) {

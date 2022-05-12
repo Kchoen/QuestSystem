@@ -1,11 +1,22 @@
-
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap");
 body {
     background: #111;
     color: #fff;
-    font-family: sans-serif;
+    font-family: 'Noto Sans TC', sans-serif;
     font-size: 2em;
     text-align: center;
     padding: 0;
     margin: 0;
 }
 
+.postBTN:hover {
+    cursor: pointer;
+    -webkit-transform: translateY(-3px);
+    -ms-transform: translateY(-3px);
+    transform: translateY(-3px);
+    -webkit-box-shadow: 0 0 6px #999;
+    box-shadow: 0 0 6px #999;
+    -webkit-transition: all .5s ease-out;
+    transition: all .5s ease-out;
+    point
+  }

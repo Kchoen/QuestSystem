@@ -79,6 +79,9 @@ const quest = sequelize.define(
                 }
             },
         },
+        ANS: {
+            type: Sequelize.STRING,
+        },
     },
     { timestamps: false }
 );

@@ -15,6 +15,9 @@ var curUsers = [];
 var QUESTS = xlsx.parse(__dirname + "/任務表.xlsx")[0].data;
 var USERS = xlsx.parse(__dirname + "/帳密表.xlsx")[0].data;
 secret = "雲夢超讚by羊羊";
+answerPool = [];
+namePool = [];
+curQuiz = 0;
 var credentials = {
     key: fs.readFileSync("server.key", "utf8"),
     cert: fs.readFileSync("server.crt", "utf8"),
@@ -54,6 +57,7 @@ async function setupQuests() {
             REPLY: QUESTS[i][5],
             FOR: createFor(QUESTS[i][6], []),
             TYPE: QUESTS[i][6],
+            ANS: QUESTS[i][7],
         });
     }
 }
@@ -129,15 +133,55 @@ function updateSession(req) {
         req.session.LVL = u.LVL;
     });
 }
-app.get("/", (req, res) => {
-    res.sendFile("index.html", { root: __dirname + "/templates" });
-});
-function showQuest() {
-    quest.update({ FOR: createFor("一般", []), TYPE: "一般" }, { where: { MTYPE: "隱藏任務" } });
+
+function showQuest(TYPE) {
+    if (TYPE == "隱藏") {
+        quest.update({ FOR: createFor("一般", []), TYPE: "一般" }, { where: { MTYPE: "隱藏任務" } });
+    } else {
+        console.log(`"${"快問快答" + (curQuiz + 1)}"`);
+        quest.update({ FOR: createFor("一般", []), TYPE: "一般" }, { where: { QNAME: "快問快答" + (curQuiz + 1) } });
+    }
 }
+
 function hideQuest() {
     quest.update({ FOR: createFor("隱藏", []), TYPE: "隱藏" }, { where: { MTYPE: "隱藏任務" } });
 }
+function handleQuiz(res, CNAME, ans) {
+    if (!namePool.includes(CNAME)) {
+        namePool.push(CNAME);
+        answerPool.push(ans);
+        res.send({ msg: "恭喜你!完成作答。" });
+    } else {
+        res.send({ msg: "你已經答題了!" });
+    }
+}
+function finishQuiz() {
+    quest.findOne({ where: { QNAME: "快問快答" + (curQuiz + 1) } }).then((q) => {
+        ans = q.ANS;
+        winners = [];
+        for (let i = 0; i < answerPool.length; i++) {
+            if (ans == answerPool[i]) {
+                winners.push(namePool[i]);
+            }
+        }
+        if (winners.length) {
+            quest.update({ FINISHED: true, FINISHEDBY: winners[0], PEOPLE: winners }, { where: { QNAME: "快問快答" + (curQuiz + 1) } });
+            io.sockets.emit("BROADCAST", `這輪的答題王者是：${winners[0]}\n下列是所有答對的小夥伴：${winners.join("、")}`);
+        } else {
+            console.log("helo");
+            io.sockets.emit("BROADCAST", `這輪沒有任何人答對！！！！`);
+        }
+        answerPool = [];
+        namePool = [];
+        curQuiz++;
+        io.sockets.emit("BROADCAST", `這輪快問快答結束`);
+        return;
+    });
+}
+app.get("/", (req, res) => {
+    res.sendFile("index.html", { root: __dirname + "/templates" });
+});
+
 app.post("/", (req, res) => {
     TYPE = req.body.TYPE;
     if (TYPE == "LOGIN") {
@@ -164,6 +208,10 @@ app.post("/", (req, res) => {
         PLAYERNAME = req.session.CNAME;
         JOB = req.session.JOB;
         LVL = req.session.LVL;
+        if (QNAME == "快問快答" + (curQuiz + 1)) {
+            handleQuiz(res, PLAYERNAME, CDKEY);
+            return;
+        }
         if (checkCDKEY(PLAYERNAME, QNAME, secret, CDKEY)) {
             quest.findOne({ where: { QNAME: QNAME } }).then((msg) => {
                 reply = { text: msg.REPLY };
@@ -217,13 +265,22 @@ app.post("/", (req, res) => {
         if (JOB == "GM") {
             if (CDKEY == "開啟任務") {
                 console.log("限時任務開啟");
-                showQuest();
+                showQuest("隱藏");
                 io.sockets.emit("BROADCAST", "現在開啟限時隱藏任務!!");
                 res.send({ msg: "已開啟" });
             } else if (CDKEY == "關閉任務") {
                 console.log("限時任務關閉");
-                hideQuest();
+                hideQuest("隱藏");
                 io.sockets.emit("BROADCAST", "限時隱藏任務已結束!!");
+                res.send({ msg: "已關閉" });
+            } else if (CDKEY == "開啟答題") {
+                console.log("快問快答開始");
+                showQuest("答題");
+                io.sockets.emit("BROADCAST", "現在開始快問快答!!");
+                res.send({ msg: "已開啟" });
+            } else if (CDKEY == "公布答案") {
+                console.log("快問快答結束");
+                finishQuiz();
                 res.send({ msg: "已關閉" });
             } else if (CDKEY.slice(0, 4) == "新增用戶") {
                 param = CDKEY.slice(5).split(";");
@@ -241,12 +298,12 @@ app.post("/", (req, res) => {
                     res.send({ msg: "新增成功" });
                 });
             } else {
-                res.send({ msg: "目前功能:['開啟任務','關閉任務','新增用戶:帳號;密碼;用戶名']" });
+                res.send({ msg: "目前功能:\n[開啟任務，關閉任務，開啟答題，公布答案\n新增用戶:帳號;密碼;用戶名]" });
             }
             return;
         }
 
-        newJOB = checkJOB(PLAYERNAME, secret, CDKEY);
+        newJOB = checkJOB(PLAYERNAME, secret, CDKEY, JOB);
         if (newJOB) {
             user.update({ JOB: newJOB }, { where: { CNAME: PLAYERNAME } }).then(() => {
                 updateFor(PLAYERNAME, newJOB, req.session.LVL);
@@ -255,7 +312,7 @@ app.post("/", (req, res) => {
                 res.send({ msg: `恭喜您！成功轉職成${newJOB}！` });
             });
         } else {
-            res.send({ msg: "您還沒完成任務！請找NPC確認。" });
+            res.send({ msg: "您還沒完成任務！請找NPC確認。或是當前轉職職業不符合您的條件。" });
         }
     } else if (TYPE == "LOGOUT") {
         req.session.destroy((err) => {
@@ -263,6 +320,7 @@ app.post("/", (req, res) => {
         });
     }
 });
+
 app.get("/FetchINFO", (req, res) => {
     if (req.session.UNAME != undefined) {
         user.findOne({ where: { UNAME: req.session.UNAME } }).then((u) => {
