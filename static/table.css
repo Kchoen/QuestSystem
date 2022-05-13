@@ -6,18 +6,17 @@ td {
 
 
 table {
-    
+    float: center;
     font-size: 16px;
     font-weight:800;
-    float: center;
     border-spacing: 1;
     border-collapse: collapse;
     background: rgba(11, 7, 7, 0.781);
     border-radius: 6px;
     overflow: hidden;
     max-width: 90%;
+    margin: 4%;
     width: 100%;
-    margin: 0 auto;
     position: relative;
   }
   table * {
@@ -57,7 +56,6 @@ table {
   body {
     background:#9BC86A;
     font: 400 14px 'Calibri','Arial';
-    padding: 20px;
   }
   
   blockquote {

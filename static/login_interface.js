@@ -2,7 +2,7 @@ function toFirstPage() {
     $(document.body).empty();
     $(document.body).append(
         $(`
-        <div id="QUESTS" style="float:left; width:100vw; height: 100vh; margin-right:1%">
+        <div id="QUESTS" style="float:left; width:100vw; height: 100vh; margin-right:1%;">
         <table style="width:99vw;">
             <thead>
                 <tr>
@@ -59,6 +59,7 @@ function toFirstPage() {
                 
             </tbody>
         </table>
+        <br>
         </div>
         <div id="Menu" class="asideMenu">
         <button class="open"></button>
@@ -241,11 +242,37 @@ function FetchQUESTS() {
     });
     socket = io("#");
     socket.on("BROADCAST", (msg) => {
-        alert(msg);
-        window.location.reload();
+        Swal.fire({
+            title: "公告",
+            html: msg,
+            width: 600,
+            padding: "3em",
+            color: "#716add",
+            backdrop: `
+            rgba(0,0,123,0.4)
+            url("/images/mushroom.gif")
+            left
+            no-repeat
+          `,
+        }).then((result) => {
+            window.location.reload();
+        });
     });
     socket.on("CELEBRATION", (msg) => {
-        alert(msg);
+        Swal.fire({
+            title: "恭喜",
+            //input: "text",
+            html: msg,
+            width: 600,
+            padding: "3em",
+            color: "#716add",
+            backdrop: `
+            rgba(0,0,123,0.4)
+            url("/images/green.gif")
+            left
+            no-repeat
+          `,
+        });
     });
 }
 function LOGIN() {
@@ -269,31 +296,97 @@ function LOGIN() {
 
 function submitQuest(item) {
     if (UserINFO.CNAME == undefined) {
-        alert("請先登入");
+        Swal.fire({
+            title: "請先登入",
+            //input: "text",
+            width: 600,
+            padding: "3em",
+            color: "#716add",
+            backdrop: `
+            rgba(0,0,123,0.4)
+            url("/images/boss.gif")
+            left
+            no-repeat
+          `,
+        });
     } else {
         text = "請輸入該任務的密鑰：";
         if ($(item).attr("id").slice(0, 4) == "快問快答") {
             text = "請輸入問題的答案：";
         }
-        let token = prompt(text);
-        if (token == null) return;
-        axios
-            .post("/", {
-                TYPE: "QUEST",
-                QNAME: $(item).attr("id"),
-                CDKEY: token,
-                PLAYERNAME: UserINFO.CNAME,
-            })
-            .then((msg) => {
-                if (msg.data.CDKEY != undefined) prompt(msg.data.msg, msg.data.CDKEY);
-                else alert(msg.data.msg);
-                window.location.reload();
-            });
+        Swal.fire({
+            title: text,
+            input: "text",
+            inputAttributes: {
+                autocapitalize: "off",
+            },
+            showCancelButton: true,
+            confirmButtonText: "提交",
+            showLoaderOnConfirm: true,
+        }).then((result) => {
+            let token = result.value;
+            if (token != null) {
+                axios
+                    .post("/", {
+                        TYPE: "QUEST",
+                        QNAME: $(item).attr("id"),
+                        CDKEY: token,
+                        PLAYERNAME: UserINFO.CNAME,
+                    })
+                    .then((msg) => {
+                        if (msg.data.CDKEY != undefined) {
+                            Swal.fire({
+                                title: "通知",
+                                html: `${msg.data.msg}\n\n${msg.data.CDKEY}`,
+                                //input: "text",
+                                width: 600,
+                                padding: "3em",
+                                color: "#716add",
+                                backdrop: `
+                        rgba(0,0,123,0.4)
+                        url("/images/mushroom.gif")
+                        left
+                        no-repeat
+                      `,
+                            }).then((result) => {
+                                window.location.reload();
+                            });
+                        } //prompt(msg.data.msg, msg.data.CDKEY);
+                        else {
+                            Swal.fire({
+                                title: "通知",
+                                //input: "text",
+                                html: msg.data.msg,
+                                width: 600,
+                                padding: "3em",
+                                color: "#716add",
+                                backdrop: `
+                        rgba(0,0,123,0.4)
+                        url("/images/green.gif")
+                        left
+                        no-repeat
+                      `,
+                            }).then((result) => {
+                                window.location.reload();
+                            });
+                        }
+                    });
+            }
+            return;
+        });
     }
 }
 
 function showMore(obj) {
-    swal($(obj).attr("arg1"), $(obj).attr("arg2"));
+    Swal.fire({
+        title: $(obj).attr("arg1"),
+        width: 600,
+        padding: "3em",
+        html: "<pre style='text-align:left;font-size:16px;font-weight:800;'>" + $(obj).attr("arg2") + "</pre>",
+        customClass: {
+            popup: "format-pre",
+        },
+    });
 }
 
 function SendCDKEY() {
@@ -305,8 +398,21 @@ function SendCDKEY() {
             PLAYERNAME: UserINFO.CNAME,
         })
         .then((msg) => {
-            alert(msg.data.msg);
-            window.location.reload();
+            Swal.fire({
+                title: "通知",
+                html: msg.data.msg,
+                width: 600,
+                padding: "3em",
+                color: "#716add",
+                backdrop: `
+                rgba(0,0,123,0.4)
+                url("/images/mushroom.gif")
+                left
+                no-repeat
+              `,
+            }).then((result) => {
+                window.location.reload();
+            });
         });
 }
 function logout() {

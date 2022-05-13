@@ -179,7 +179,9 @@ function finishQuiz() {
 app.get("/", (req, res) => {
     res.sendFile("index.html", { root: __dirname + "/templates" });
 });
-
+app.get("/images/:fileName", (req, res) => {
+    res.sendFile(req.params.fileName, { root: __dirname + "/image" });
+});
 app.post("/", (req, res) => {
     TYPE = req.body.TYPE;
     if (TYPE == "LOGIN") {
@@ -254,7 +256,7 @@ app.post("/", (req, res) => {
                 }
             });
         } else {
-            res.send({ msg: "您還沒完成任務！請找NPC確認。" });
+            res.send({ msg: "任務已經結束。或是您還沒完成任務！請找NPC確認。" });
         }
     } else if (TYPE == "ChangeJOB") {
         JOB = req.session.JOB;
