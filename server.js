@@ -208,6 +208,10 @@ app.post("/", (req, res) => {
         PLAYERNAME = req.session.CNAME;
         JOB = req.session.JOB;
         LVL = req.session.LVL;
+        if (PLAYERNAME == undefined) {
+            res.send({ msg: "任務已經結束。\n或是您還沒完成任務！請找NPC確認。" });
+            return;
+        }
         if (QNAME == "快問快答" + (curQuiz + 1)) {
             handleQuiz(res, PLAYERNAME, CDKEY);
             return;
@@ -256,7 +260,7 @@ app.post("/", (req, res) => {
                 }
             });
         } else {
-            res.send({ msg: "任務已經結束。或是您還沒完成任務！請找NPC確認。" });
+            res.send({ msg: "任務已經結束。\n或是您還沒完成任務！請找NPC確認。" });
         }
     } else if (TYPE == "ChangeJOB") {
         JOB = req.session.JOB;
@@ -312,7 +316,7 @@ app.post("/", (req, res) => {
                 res.send({ msg: `恭喜您！成功轉職成${newJOB}！` });
             });
         } else {
-            res.send({ msg: "您還沒完成任務！請找NPC確認。或是當前轉職職業不符合您的條件。" });
+            res.send({ msg: "您還沒完成任務！請找NPC確認。\n或是當前轉職職業不符合您的條件。" });
         }
     } else if (TYPE == "LOGOUT") {
         req.session.destroy((err) => {

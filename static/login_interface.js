@@ -244,13 +244,16 @@ function FetchQUESTS() {
     socket.on("BROADCAST", (msg) => {
         Swal.fire({
             title: "公告",
-            html: msg,
+            html: "<pre style='font-weight:800;'>" + msg + "</pre>",
+            customClass: {
+                popup: "format-pre",
+            },
             width: 600,
             padding: "3em",
             color: "#716add",
             backdrop: `
             rgba(0,0,123,0.4)
-            url("/images/mushroom.gif")
+            url("/images/boss.gif")
             left
             no-repeat
           `,
@@ -262,7 +265,10 @@ function FetchQUESTS() {
         Swal.fire({
             title: "恭喜",
             //input: "text",
-            html: msg,
+            html: "<pre style='font-weight:800;'>" + msg + "</pre>",
+            customClass: {
+                popup: "format-pre",
+            },
             width: 600,
             padding: "3em",
             color: "#716add",
@@ -295,86 +301,76 @@ function LOGIN() {
 }
 
 function submitQuest(item) {
-    if (UserINFO.CNAME == undefined) {
-        Swal.fire({
-            title: "請先登入",
-            //input: "text",
-            width: 600,
-            padding: "3em",
-            color: "#716add",
-            backdrop: `
-            rgba(0,0,123,0.4)
-            url("/images/boss.gif")
-            left
-            no-repeat
-          `,
-        });
-    } else {
-        text = "請輸入該任務的密鑰：";
-        if ($(item).attr("id").slice(0, 4) == "快問快答") {
-            text = "請輸入問題的答案：";
-        }
-        Swal.fire({
-            title: text,
-            input: "text",
-            inputAttributes: {
-                autocapitalize: "off",
-            },
-            showCancelButton: true,
-            confirmButtonText: "提交",
-            showLoaderOnConfirm: true,
-        }).then((result) => {
-            let token = result.value;
-            if (token != null) {
-                axios
-                    .post("/", {
-                        TYPE: "QUEST",
-                        QNAME: $(item).attr("id"),
-                        CDKEY: token,
-                        PLAYERNAME: UserINFO.CNAME,
-                    })
-                    .then((msg) => {
-                        if (msg.data.CDKEY != undefined) {
-                            Swal.fire({
-                                title: "通知",
-                                html: `${msg.data.msg}\n\n${msg.data.CDKEY}`,
-                                //input: "text",
-                                width: 600,
-                                padding: "3em",
-                                color: "#716add",
-                                backdrop: `
-                        rgba(0,0,123,0.4)
-                        url("/images/mushroom.gif")
-                        left
-                        no-repeat
-                      `,
-                            }).then((result) => {
-                                window.location.reload();
-                            });
-                        } //prompt(msg.data.msg, msg.data.CDKEY);
-                        else {
-                            Swal.fire({
-                                title: "通知",
-                                //input: "text",
-                                html: msg.data.msg,
-                                width: 600,
-                                padding: "3em",
-                                color: "#716add",
-                                backdrop: `
-                        rgba(0,0,123,0.4)
-                        url("/images/green.gif")
-                        left
-                        no-repeat
-                      `,
-                            }).then((result) => {
-                                window.location.reload();
-                            });
-                        }
-                    });
-            }
-            return;
-        });
+    text = "請輸入該任務的密鑰：";
+    if ($(item).attr("id").slice(0, 4) == "快問快答") {
+        text = "請輸入問題的答案：";
     }
+    Swal.fire({
+        title: text,
+        input: "text",
+        inputAttributes: {
+            autocapitalize: "off",
+        },
+        showCancelButton: true,
+        confirmButtonText: "提交",
+        showLoaderOnConfirm: true,
+    }).then((result) => {
+        let token = result.value;
+        if (token != null) {
+            axios
+                .post("/", {
+                    TYPE: "QUEST",
+                    QNAME: $(item).attr("id"),
+                    CDKEY: token,
+                    PLAYERNAME: UserINFO.CNAME,
+                })
+                .then((msg) => {
+                    if (msg.data.CDKEY != undefined) {
+                        Swal.fire({
+                            title: "通知",
+                            html: "<pre style='font-weight:800;'>" + `${msg.data.msg}\n\n${msg.data.CDKEY}` + "</pre>",
+                            customClass: {
+                                popup: "format-pre",
+                            },
+                            //input: "text",
+                            width: 600,
+                            padding: "3em",
+                            color: "#716add",
+                            backdrop: `
+                    rgba(0,0,123,0.4)
+                    url("/images/mushroom.gif")
+                    left
+                    no-repeat
+                    `,
+                        }).then((result) => {
+                            window.location.reload();
+                        });
+                    } //prompt(msg.data.msg, msg.data.CDKEY);
+                    else {
+                        Swal.fire({
+                            title: "通知",
+                            //input: "text",
+                            html: "<pre style='font-weight:800;'>" + msg.data.msg + "</pre>",
+                            customClass: {
+                                popup: "format-pre",
+                            },
+                            width: 600,
+                            padding: "3em",
+                            color: "#716add",
+                            backdrop: `
+                    rgba(0,0,123,0.4)
+                    url("/images/green.gif")
+                    left
+                    no-repeat
+                    `,
+                        }).then((result) => {
+                            window.location.reload();
+                        });
+                    }
+                });
+        }
+        return;
+    });
 }
 
 function showMore(obj) {
@@ -400,7 +396,10 @@ function SendCDKEY() {
         .then((msg) => {
             Swal.fire({
                 title: "通知",
-                html: msg.data.msg,
+                html: "<pre style='font-weight:800;'>" + msg.data.msg + "</pre>",
+                customClass: {
+                    popup: "format-pre",
+                },
                 width: 600,
                 padding: "3em",
                 color: "#716add",

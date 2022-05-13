@@ -44,7 +44,7 @@ function JobQuestReply(ID, CNAME, secret) {
 
     let TOKEN = CNAME + JOB + secret;
     hashCDKEY = crypto.createHash("MD5").update(TOKEN).digest("hex");
-    reply = { text: `在專屬任務中，輸入您的轉職序號即可轉職成功，還請不要外流您的轉職序號，也請你保存好！\n下列是您的轉職序號\n\n再次恭喜！`, CDKEY: hashCDKEY };
+    reply = { text: `在專屬任務中，輸入您的轉職序號即可轉職成功，\n還請不要外流您的轉職序號，也請您保存好！\n下列是您的轉職序號\n`, CDKEY: hashCDKEY };
 
     return reply;
 }
