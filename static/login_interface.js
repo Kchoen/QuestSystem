@@ -354,7 +354,7 @@ function filterQuest(TYPE) {
             text = "未完成",
             btntxt = "";
         if (!q.PEOPLE.includes(UserINFO.CNAME)) {
-            FINISHED.push(q);
+            UNFINISHED.push(q);
             continue;
         }
         if (q.FINISHED) {
