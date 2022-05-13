@@ -157,10 +157,10 @@ function handleQuiz(res, CNAME, ans) {
 }
 function finishQuiz() {
     quest.findOne({ where: { QNAME: "快問快答" + (curQuiz + 1) } }).then((q) => {
-        ans = q.ANS;
+        anss = q.ANS.split(";");
         winners = [];
         for (let i = 0; i < answerPool.length; i++) {
-            if (ans == answerPool[i]) {
+            if (anss.includes(answerPool[i])) {
                 winners.push(namePool[i]);
             }
         }

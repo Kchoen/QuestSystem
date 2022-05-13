@@ -133,13 +133,13 @@ function loadQUESTS(QUESTS) {
     END = `</tbody></table>`;
     questCODE = "";
     questCODE += BEGIN;
-    FINISHED = [];
+    UNFINISHED = [];
     for (var q of QUESTS) {
         let color = "red",
             text = "未完成",
             btntxt = "";
-        if (q.PEOPLE.includes(UserINFO.CNAME)) {
-            FINISHED.push(q);
+        if (!q.PEOPLE.includes(UserINFO.CNAME)) {
+            UNFINISHED.push(q);
             continue;
         }
         if (q.FINISHED) {
@@ -157,7 +157,7 @@ function loadQUESTS(QUESTS) {
             <td ${btntxt} style="cursor: pointer;background-color:${color};">${text}</td>
         </tr>`;
     }
-    for (var q of FINISHED) {
+    for (var q of UNFINISHED) {
         let color = "red",
             text = "未完成",
             btntxt = "";
@@ -170,10 +170,10 @@ function loadQUESTS(QUESTS) {
         <tr align="center">
             <td>${q.MTYPE}</td>
             <td>${q.QNAME}</td>
-            <td arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)">${q.EXPLAIN}...(點擊獲得更多資訊)</td>
+            <td><button arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.EXPLAIN}...(點擊獲得更多資訊)</button></td>
             <td>${q.PRICE}</td>
-            <td style="background-color:green;"><button id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</button></td>
-            <td ${btntxt} style="background-color:${color};">${text}</td>
+            <td class="postBTN" id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</td>
+            <td ${btntxt} style="cursor: pointer;background-color:${color};">${text}</td>
         </tr>`;
     }
     questCODE += END;
@@ -293,9 +293,7 @@ function submitQuest(item) {
 }
 
 function showMore(obj) {
-    arg2 = $(obj).attr("arg2").split("。");
-    arg2 = arg2.join("。\n");
-    swal($(obj).attr("arg1"), arg2, "info");
+    swal($(obj).attr("arg1"), $(obj).attr("arg2"));
 }
 
 function SendCDKEY() {
@@ -349,13 +347,13 @@ function filterQuest(TYPE) {
     END = "</table>";
     questCODE = "";
     questCODE += BEGIN;
-    FINISHED = [];
+    UNFINISHED = [];
     for (var q of QUESTS) {
         if (q.MTYPE != TYPE && TYPE != "全任務") continue;
         let color = "red",
             text = "未完成",
             btntxt = "";
-        if (q.PEOPLE.includes(UserINFO.CNAME)) {
+        if (!q.PEOPLE.includes(UserINFO.CNAME)) {
             FINISHED.push(q);
             continue;
         }
@@ -374,7 +372,7 @@ function filterQuest(TYPE) {
             <td ${btntxt} style="cursor: pointer;background-color:${color};">${text}</td>
         </tr>`;
     }
-    for (var q of FINISHED) {
+    for (var q of UNFINISHED) {
         let color = "red",
             text = "未完成",
             btntxt = "";
