@@ -345,7 +345,7 @@ app.get("/QUESTS", (req, res) => {
         .findAll({})
         .then((msgs) => {
             for (msg of msgs) {
-                if (!msg.FOR.includes(CNAME)) continue;
+                if (!msg.FOR.includes(CNAME) && !msg.PEOPLE.includes(CNAME)) continue;
                 questLIST.push({
                     MTYPE: msg.MTYPE,
                     NAME: msg.NAME,
