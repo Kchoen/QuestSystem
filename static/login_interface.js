@@ -110,15 +110,11 @@ function loadQUESTS(QUESTS) {
         <tbody id="qTable">
         <tr align="left">
             <td colspan="6">
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('全任務')">全任務</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('終極任務')">終極</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('主線任務')">主線</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('支線任務')">支線</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('轉職任務')">轉職</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('職業任務')">職業</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('試煉任務')">試煉</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('答題任務')">答題</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('隱藏任務')">隱藏</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('全任務')">全部任務</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('主線任務')">主線任務</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('支線任務')">支線任務</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('答題任務')">答題任務</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('隱藏任務')">隱藏任務</button>
             </td>
             
             
@@ -136,7 +132,7 @@ function loadQUESTS(QUESTS) {
     questCODE += BEGIN;
     UNFINISHED = [];
     for (var q of QUESTS) {
-        let color = "red",
+        let color = "green",
             text = "未完成",
             btntxt = "";
         if (!q.PEOPLE.includes(UserINFO.CNAME)) {
@@ -145,7 +141,6 @@ function loadQUESTS(QUESTS) {
         }
         if (q.FINISHED) {
             btntxt = `arg1="已完成玩家" arg2="${q.PEOPLE.join("、")}" onclick="showMore(this)"`;
-            color = "green";
             text = `由${q.FINISHEDBY}完成`;
         }
         questCODE += `
@@ -164,7 +159,6 @@ function loadQUESTS(QUESTS) {
             btntxt = "";
         if (q.FINISHED) {
             btntxt = `arg1="已完成玩家" arg2="${q.PEOPLE.join("、")}" onclick="showMore(this)"`;
-            color = "green";
             text = `由${q.FINISHEDBY}完成`;
         }
         questCODE += `
@@ -428,15 +422,11 @@ function filterQuest(TYPE) {
     BEGIN = `
         <tr align="left">
         <td colspan="6">
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('全任務')">全任務</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('終極任務')">終極</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('主線任務')">主線</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('支線任務')">支線</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('轉職任務')">轉職</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('職業任務')">職業</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('試煉任務')">試煉</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('答題任務')">答題</button>
-            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('隱藏任務')">隱藏</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('全任務')">全部任務</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('主線任務')">主線任務</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('支線任務')">支線任務</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('答題任務')">答題任務</button>
+            <button class="button-85" style="color:white;font-weight:600" onclick="filterQuest('隱藏任務')">隱藏任務</button>
             
             </td>
             
@@ -454,8 +444,16 @@ function filterQuest(TYPE) {
     questCODE += BEGIN;
     UNFINISHED = [];
     for (var q of QUESTS) {
-        if (q.MTYPE != TYPE && TYPE != "全任務") continue;
-        let color = "red",
+        if (TYPE != "全任務") {
+            if (TYPE == "主線任務") {
+                if (!["終極任務", "主線任務", "轉職任務", "職業任務", "試煉任務"].includes(q.MTYPE)) {
+                    continue;
+                }
+            } else if (q.MTYPE != TYPE) {
+                continue;
+            }
+        }
+        let color = "green",
             text = "未完成",
             btntxt = "";
         if (!q.PEOPLE.includes(UserINFO.CNAME)) {
@@ -464,7 +462,6 @@ function filterQuest(TYPE) {
         }
         if (q.FINISHED) {
             btntxt = `arg1="已完成玩家" arg2="${q.PEOPLE.join("、")}" onclick="showMore(this)"`;
-            color = "green";
             text = `由${q.FINISHEDBY}完成`;
         }
         questCODE += `
@@ -483,7 +480,6 @@ function filterQuest(TYPE) {
             btntxt = "";
         if (q.FINISHED) {
             btntxt = `arg1="已完成玩家" arg2="${q.PEOPLE.join("、")}" onclick="showMore(this)"`;
-            color = "green";
             text = `由${q.FINISHEDBY}完成`;
         }
         questCODE += `
