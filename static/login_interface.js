@@ -148,7 +148,7 @@ function loadQUESTS(QUESTS) {
             <td>${q.MTYPE}</td>
             <td>${q.QNAME}</td>
             <td><button arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.EXPLAIN}...(點擊獲得更多資訊)</button></td>
-            <td>${q.PRICE}</td>
+            <td><button arg1="任務獎勵" arg2="${q.PRICE}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.PRICE.split("幣").length > 1 ? q.PRICE.split("幣")[0] + "幣" : "黑風"}...</button></td>
             <td class="postBTN" id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</td>
             <td ${btntxt} style="cursor: pointer;background-color:${color};">${text}</td>
         </tr>`;
@@ -166,7 +166,7 @@ function loadQUESTS(QUESTS) {
             <td>${q.MTYPE}</td>
             <td>${q.QNAME}</td>
             <td><button arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.EXPLAIN}...(點擊獲得更多資訊)</button></td>
-            <td>${q.PRICE}</td>
+            <td><button arg1="任務獎勵" arg2="${q.PRICE}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.PRICE.split("幣").length > 1 ? q.PRICE.split("幣")[0] + "幣" : "黑風"}...</button></td>
             <td class="postBTN" id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</td>
             <td ${btntxt} style="cursor: pointer;background-color:${color};">${text}</td>
         </tr>`;
@@ -469,7 +469,7 @@ function filterQuest(TYPE) {
             <td>${q.MTYPE}</td>
             <td>${q.QNAME}</td>
             <td><button arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.EXPLAIN}...(點擊獲得更多資訊)</button></td>
-            <td>${q.PRICE}</td>
+            <td><button arg1="任務獎勵" arg2="${q.PRICE}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.PRICE.split("幣").length > 1 ? q.PRICE.split("幣")[0] + "幣" : "黑風"}...</button></td>
             <td class="postBTN" id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</td>
             <td ${btntxt} style="cursor: pointer;background-color:${color};">${text}</td>
         </tr>`;
@@ -487,7 +487,9 @@ function filterQuest(TYPE) {
             <td>${q.MTYPE}</td>
             <td>${q.QNAME}</td>
             <td><button arg1="${q.QNAME}" arg2="${q.LONGEXPLAIN}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${q.EXPLAIN}...(點擊獲得更多資訊)</button></td>
-            <td>${q.PRICE}</td>
+            <td><button arg1="任務獎勵" arg2="${q.PRICE}" onclick="showMore(this)" style="cursor: pointer;color:rgba(213, 235, 255, 0.932);font-weight:800;">${
+            q.PRICE.split("幣").length > 1 ? q.PRICE.split("幣")[0] + "幣" : "黑風"
+        }......(點擊獲得更多資訊)</button></td>
             <td class="postBTN" id="${q.QNAME}" style="background-color:green;color:white;" onclick="submitQuest(this)">繳交任務</td>
             <td ${btntxt} style="cursor: pointer;background-color:${color};">${text}</td>
         </tr>`;

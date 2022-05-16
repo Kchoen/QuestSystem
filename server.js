@@ -129,7 +129,6 @@ function updateFor(CNAME, JOB, LVL) {
             if (curUsers[i].CNAME == CNAME) {
                 curUsers[i].JOB = JOB;
                 curUsers[i].LVL = LVL;
-                console.log(curUsers);
                 break;
             }
         }
@@ -287,7 +286,7 @@ app.post("/", (req, res) => {
                 hideQuest("隱藏");
                 io.sockets.emit("BROADCAST", "限時隱藏任務已結束!!");
                 res.send({ msg: "已關閉" });
-            } else if (CDKEY == "開始答題") {
+            } else if (CDKEY == "開始作答") {
                 console.log("快問快答開始");
                 showQuest("答題");
                 io.sockets.emit("BROADCAST", "現在開始快問快答!!");
@@ -312,7 +311,7 @@ app.post("/", (req, res) => {
                     res.send({ msg: "新增成功" });
                 });
             } else {
-                res.send({ msg: "目前功能:\n[開啟任務，關閉任務，開始答題，公布答案\n新增用戶:帳號;密碼;用戶名]" });
+                res.send({ msg: "目前功能:\n[開啟任務，關閉任務，開始作答，公布答案\n新增用戶:帳號;密碼;用戶名]" });
             }
             return;
         }
