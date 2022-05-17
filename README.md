@@ -1,9 +1,10 @@
 # QuestSystem
 --
-這是用來公告任務的網頁系統
+這是雲夢公會用來公告任務的網頁系統
+使用任務表Excel 表格 匯出為公佈欄網站
 
-測試用網站:pollnextdoor.com  
-我不在時網站:web2.pollnextdoor.com  
+測試用網站(不一定開):pollnextdoor.com  
+我不在時網站(常開 更新較慢):web2.pollnextdoor.com  
 任務討論清單:  
 https://docs.google.com/document/d/1eZcV1KS4cV6GnM6JESjJkgfD9x_WCovOUkBkPwSRsU4/edit?usp=sharing  
 正式任務表:  
